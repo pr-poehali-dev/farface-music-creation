@@ -4,9 +4,12 @@ import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import Icon from '@/components/ui/icon';
+import NewRelease from '@/components/NewRelease';
+import Finances from '@/components/Finances';
 
 const Index = () => {
   const [selectedRelease, setSelectedRelease] = useState<number | null>(null);
+  const [currentPage, setCurrentPage] = useState('dashboard');
 
   const releases = [
     {
@@ -65,7 +68,12 @@ const Index = () => {
             <div className="space-y-2">
               <Button
                 variant="ghost"
-                className="w-full justify-start gap-3 bg-primary/10 text-primary hover:bg-primary/20"
+                onClick={() => setCurrentPage('dashboard')}
+                className={`w-full justify-start gap-3 ${
+                  currentPage === 'dashboard'
+                    ? 'bg-primary/10 text-primary hover:bg-primary/20'
+                    : 'hover:bg-muted'
+                }`}
               >
                 <Icon name="Home" size={20} />
                 <span>Главная</span>
@@ -78,7 +86,15 @@ const Index = () => {
                 <Icon name="BarChart3" size={20} />
                 <span>Аналитика</span>
               </Button>
-              <Button variant="ghost" className="w-full justify-start gap-3 hover:bg-muted">
+              <Button
+                variant="ghost"
+                onClick={() => setCurrentPage('finances')}
+                className={`w-full justify-start gap-3 ${
+                  currentPage === 'finances'
+                    ? 'bg-primary/10 text-primary hover:bg-primary/20'
+                    : 'hover:bg-muted'
+                }`}
+              >
                 <Icon name="Wallet" size={20} />
                 <span>Финансы</span>
               </Button>
@@ -98,22 +114,29 @@ const Index = () => {
         </aside>
 
         <main className="flex-1 overflow-y-auto">
-          <header className="bg-card border-b border-border p-6 sticky top-0 z-10 backdrop-blur-lg bg-card/80">
-            <div className="flex items-center justify-between">
-              <div>
-                <h2 className="text-2xl font-heading font-bold">Дистрибьюция</h2>
-                <p className="text-sm text-muted-foreground mt-1">
-                  Управляйте релизами и отслеживайте статистику
-                </p>
-              </div>
-              <Button className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2">
-                <Icon name="Plus" size={18} />
-                Новый релиз
-              </Button>
-            </div>
-          </header>
+          {currentPage === 'newRelease' && <NewRelease />}
+          {currentPage === 'finances' && <Finances />}
+          {currentPage === 'dashboard' && (
+            <>
+              <header className="bg-card border-b border-border p-6 sticky top-0 z-10 backdrop-blur-lg bg-card/80">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h2 className="text-2xl font-heading font-bold">Дистрибьюция</h2>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Управляйте релизами и отслеживайте статистику
+                    </p>
+                  </div>
+                  <Button
+                    onClick={() => setCurrentPage('newRelease')}
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground gap-2"
+                  >
+                    <Icon name="Plus" size={18} />
+                    Новый релиз
+                  </Button>
+                </div>
+              </header>
 
-          <div className="p-6">
+              <div className="p-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
               <Card className="bg-card border-border p-6">
                 <div className="flex items-center justify-between mb-2">
@@ -262,7 +285,9 @@ const Index = () => {
                 </Card>
               </TabsContent>
             </Tabs>
-          </div>
+              </div>
+            </>
+          )}
         </main>
       </div>
     </div>
